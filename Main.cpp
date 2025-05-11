@@ -1,1 +1,1 @@
-fdada
+cout << "hola mundo" << endl;
