@@ -14,3 +14,6 @@ void Ficha::moverFicha (int nuevaFila, int nuevaColumna){
 
 }
 
+std::string Ficha::getNombre() const {
+    return std::string(1, tipoFicha);  // ejemplo: 'R' → "R"
+}

@@ -17,6 +17,6 @@ public:
     void moverFicha (int nuevaFila, int nuevaColumna);
 
 
-   
+    std::string getNombre() const;
 
 };
