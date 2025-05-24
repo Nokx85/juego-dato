@@ -1,8 +1,12 @@
-using namespace std;
-#include <iostream>
 
-int main(){
-    cout << "hola mundo" << endl;
+#include <iostream>
+using namespace std;
+
+
+int main()
+{
+    cout<<"ola joaqin";
+
     return 0;
 }
-    
+
