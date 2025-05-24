@@ -1,3 +1,4 @@
+
 #include "../Include/Ficha.h"
 
 
@@ -6,6 +7,7 @@ Ficha::Ficha(char tipoFicha,int fila,int columna, bool capturaDojo){
     this->fila = fila;
     this->columna = columna;
     this->capturaDojo = capturaDojo;
+
 }
 
 void Ficha::moverFicha (int nuevaFila, int nuevaColumna){
