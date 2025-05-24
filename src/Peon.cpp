@@ -1,7 +1,9 @@
-#include "Peon.h"
+
+#include "../Include/Peon.h"
 
 Peon::Peon(int fila, int columna) : 
-Ficha('P',fila,columna){
+Ficha('P',fila,columna,false){
+
 
 }
 
