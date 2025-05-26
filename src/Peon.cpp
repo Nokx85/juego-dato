@@ -1,14 +1,13 @@
-#include "Peon.h"
 
-Peon::Peon(int fila, int columna) : 
-Ficha('P',fila,columna){
+#include "../Include/Peon.h"
+
+Peon::Peon(int fila, int columna, char dueno) : 
+Ficha('P',fila,columna,false,dueno){
+
 
 }
 
-void Peon::moverFicha(int nuevaFila, int nuevaColumna){
 
-    Ficha::moverFicha(nuevaFila ,nuevaColumna);
-}
 
 
 

@@ -4,9 +4,7 @@ class Peon : public Ficha{
 
 public:
 
-    Peon(int fila, int columna);
-
-    void moverFicha (int nuevaFila, int nuevaColumna);
+    Peon(int fila, int columna, char dueno);
 
 
 
