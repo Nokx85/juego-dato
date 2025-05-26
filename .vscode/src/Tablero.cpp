@@ -15,9 +15,30 @@ void Tablero::colocarFicha(Ficha* ficha, int fila, int columna){
     casillas[fila][columna] = ficha;
 }
 
+bool Tablero::enRango(int fila, int columna) const{
+        return fila>=0 && fila<Filas && columna>=0 && columna<Columnas;
+}
+
+bool Tablero::movimientoValidos(int filaOrigen, int colOrigen, int filaDestino, int colDestino){
+    if ( !enRango(filaOrigen, colOrigen) || !enRango(filaDestino, colDestino))
+        return false; // sobre pasa el limite del tablero 
+
+    Ficha* fOrigen = casillas[filaOrigen][colOrigen];
+    if(!fOrigen)
+        return false;  // no hay ficha en el origen
+
+    Ficha* fDestino = casillas[filaDestino][colDestino];
+    if (fDestino && fDestino->getDueno() == fOrigen->getDueno())
+        return false; // no se puede comer una piesa propia 
+
+    return true;
+}
+
+
 void Tablero::moverFicha(int filaOrigen, int colOrigen, int filaDestino, int colDestino){
-    // si la poscicion no tiene ficha no realisamos ninguna accion
-    if (casillas[filaOrigen][colOrigen] == nullptr) return;
+    // por si no existe una ficha en la poscion origen
+    Ficha* fOrigen = casillas[filaOrigen][colOrigen];
+    if (!fOrigen) return;
 
     // existe una ficha en esta poscicion? si es asi la borra(captura)
     if(casillas [filaDestino][colDestino] != nullptr){
@@ -25,11 +46,11 @@ void Tablero::moverFicha(int filaOrigen, int colOrigen, int filaDestino, int col
     }
 
     //mueve la ficha
-    casillas[filaDestino][colDestino] = casillas[filaOrigen][colOrigen];
+    casillas[filaDestino][colDestino] = fOrigen;
     casillas[filaOrigen][colOrigen] = nullptr;
 
     //actualisa la pos en la fila 
-    casillas[filaDestino][colDestino]->moverFicha(filaDestino, colDestino);
+    casillas[filaDestino][colDestino]->setPosicionFicha(filaDestino, colDestino);
 
 }
  // elimina la ficha si existe una ficha en la pos
@@ -40,7 +61,7 @@ void Tablero::eliminarFicha(int fila, int columna){
     }
 }
 
-Ficha* Tablero::getFicha(int fila, int columna) const{
+Ficha* Tablero::getPosicionFicha(int fila, int columna) const{
     return casillas[fila][columna];
 }
 
