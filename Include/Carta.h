@@ -1,4 +1,4 @@
-
+#pragma once
 
 struct Movimiento{  //para crear mov como otra clase para tener mas mov posilble en 1 carta 
     int dx;
