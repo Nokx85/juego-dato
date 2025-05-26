@@ -1,5 +1,7 @@
-#include <string>
+#pragma once
 
+
+#include <string>
 
 class Ficha
 {
@@ -26,8 +28,6 @@ public:
     bool   getCaptura()  const;
 
     char   getDueno()    const;
-
-
 
     std::string getNombre() const;
 

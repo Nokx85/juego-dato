@@ -73,7 +73,7 @@ void Tablero::mostrarTablero() const{
             }else{
                 std::cout << casillas[fila][col]->getNombre() << " ";
             }
-        
+
         }
         std::cout << std::endl;
     }

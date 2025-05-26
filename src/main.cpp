@@ -5,8 +5,7 @@
 #include "../Include/CartaTigre.h"
 
 int main(){
-
-    Tablero tablero;   //inicialisar tablero
+     Tablero tablero;   //inicialisar tablero
 
     tablero.colocarFicha(new Rey(0,0,'a'),0,2);  
     // creamos la ficha roja en la pos((*rey), fila, columna)
@@ -29,7 +28,9 @@ int main(){
  
     } 
 
-     tablero.mostrarTablero();
+     
+   
+   tablero.mostrarTablero();
 
     return 0;
 }
