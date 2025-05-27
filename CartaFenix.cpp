@@ -1,4 +1,4 @@
-#include "../Include/CartaFenix.h"
+#include "CartaFenix.h"
 
 CartaFenix::CartaFenix(){
     cantidadMovimientos = 2;

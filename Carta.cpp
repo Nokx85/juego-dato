@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "../Include/Carta.h"
+#include "Carta.h"
 
 Carta::Carta(){
     cantidadMovimientos = 0;

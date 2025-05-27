@@ -1,4 +1,4 @@
-#include "../Include/CartaDragon.h"
+#include "CartaDragon.h"
 
 CartaDragon::CartaDragon(){
     cantidadMovimientos = 4;

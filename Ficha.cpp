@@ -1,5 +1,5 @@
 
-#include "../Include/Ficha.h"
+#include "Ficha.h"
 
 
 Ficha::Ficha(char tipoFicha,int fila,int columna, bool capturaDojo, char dueno){
