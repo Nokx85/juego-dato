@@ -7,7 +7,7 @@ class Peon : public Ficha{
 
 public:
 
-    Peon(int fila, int columna, char dueno);
+    Peon(char dueno);
 
 
 
