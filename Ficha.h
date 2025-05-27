@@ -14,7 +14,7 @@ private:
     char dueno;
     
 public:
-    Ficha(char tipoFicha,int fila,int columna, bool capturaDojo, char dueno);
+    Ficha(char tipoFicha, bool capturaDojo, char dueno);
 
 
     void setPosicionFicha (int nuevaFila, int nuevaColumna);

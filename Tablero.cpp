@@ -11,7 +11,8 @@ Tablero::Tablero(){
     }
 }
 
-void Tablero::colocarFicha(Ficha* ficha, int fila, int columna){
+void Tablero::colocarFicha(Ficha* ficha, int fila, int columna) {
+    ficha->setPosicionFicha(fila, columna); 
     casillas[fila][columna] = ficha;
 }
 
@@ -57,12 +58,17 @@ void Tablero::moverFicha(int filaOrigen, int colOrigen, int filaDestino, int col
     if (fOrigen->getTipo() == 'R') {
         if (fOrigen->getDueno() == 'r' && filaDestino == 0 && colDestino == 2) {
             std::cout << "¡El Rey Rojo llegó al dojo azul! Gana el jugador ROJO." << std::endl;
-           exit(0);
+           std::cout << "[DEBUG] Saliendo del juego por victoria." << std::endl;
+
+            
     }
     if (fOrigen->getDueno() == 'a' && filaDestino == 4 && colDestino == 2) {
         std::cout << "¡El Rey Azul llegó al dojo rojo! Gana el jugador AZUL." << std::endl;
-        exit(0);
+        std::cout << "[DEBUG] Saliendo del juego por victoria." << std::endl;
+
+        
     }
+
 }
 
 }
@@ -73,11 +79,15 @@ void Tablero::eliminarFicha(int fila, int columna){
         if(ficha->getTipo() == 'R' ){
             if(ficha->getDueno() == 'a'){
                  std::cout << "¡El Rey Azul ha sido capturado! Gana el jugador ROJO." << std::endl;
-                 exit(0); // cambiar
+                 std::cout << "[DEBUG] Saliendo del juego por victoria." << std::endl;
+
+                 
             }
             if(ficha->getDueno() == 'r'){
                 std::cout << "¡El Rey Azul ha sido capturado! Gana el jugador AZUL." << std::endl;
-                exit(0); // cambiar
+                std::cout << "[DEBUG] Saliendo del juego por victoria." << std::endl;
+
+                
             }
 
             
@@ -97,7 +107,7 @@ void Tablero::mostrarTablero() const{
             if(casillas[fila][col] == nullptr){
                 std::cout << ".  ";
             }else{
-                std::cout << casillas[fila][col]->getNombre() << " ";
+                std::cout << casillas[fila][col]->getTipo() << casillas[fila][col]->getDueno() << " ";
             }
 
         }

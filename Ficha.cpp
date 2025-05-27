@@ -2,12 +2,13 @@
 #include "Ficha.h"
 
 
-Ficha::Ficha(char tipoFicha,int fila,int columna, bool capturaDojo, char dueno){
+Ficha::Ficha(char tipoFicha, bool capturaDojo, char dueno){
     this->tipoFicha = tipoFicha;
-    this->fila = fila;
-    this->columna = columna;
     this->capturaDojo = capturaDojo;
     this->dueno = dueno;
+
+    this->fila = -1;
+    this->columna = -1;
 
 }
 
