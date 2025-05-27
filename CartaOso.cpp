@@ -1,4 +1,4 @@
-#include "../Include/CartaOso.h"
+#include "CartaOso.h"
 
 CartaOso::CartaOso(){
      cantidadMovimientos = 3;

@@ -1,4 +1,4 @@
-#include "../Include/CartaLeon.h"
+#include "CartaLeon.h"
 
 CartaLeon::CartaLeon(){
    cantidadMovimientos = 3;

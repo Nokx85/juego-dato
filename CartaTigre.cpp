@@ -1,4 +1,4 @@
-#include "../Include/CartaTigre.h"
+#include "CartaTigre.h"
 
 CartaTigre::CartaTigre(){
     cantidadMovimientos = 2;
