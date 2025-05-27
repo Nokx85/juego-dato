@@ -64,9 +64,10 @@ int main() {
         }
 
         Carta* cartaUsada = jugador->cartas[indiceCarta];
+
+        std::cout << "Movimientos posibles de la carta elegida:\n";
         cartaUsada->mostrarMovimientos();
 
-        // Mostrar fichas disponibles y enumerarlas
         std::vector<std::pair<int, int>> posiciones;
         std::cout << "Fichas disponibles para mover:\n";
         int index = 0;
@@ -98,38 +99,46 @@ int main() {
             continue;
         }
 
-        std::cout << "Elige el numero del movimiento que quieres usar (0 hasta " << cartaUsada->getCantidadMovimientos()-1 << "): ";
+        // Mostrar y guardar los movimientos válidos numerados
+        std::vector<std::pair<int, int>> movimientosValidos;
+        std::cout << "\nMovimientos posibles desde esa ficha:\n";
+        for (int i = 0; i < cartaUsada->getCantidadMovimientos(); ++i) {
+            Movimiento mov = cartaUsada->getMovimiento(i);
+            int filaDestino = filaOrigen + mov.dx;
+            int colDestino = colOrigen + mov.dy;
+
+            if (tablero.movimientoValidos(filaOrigen, colOrigen, filaDestino, colDestino)) {
+                std::cout << movimientosValidos.size() << ": a (" << filaDestino << "," << colDestino << ")\n";
+                movimientosValidos.push_back({filaDestino, colDestino});
+            }
+        }
+
+        if (movimientosValidos.empty()) {
+            std::cout << "\nNo hay movimientos válidos para esta ficha. Elige otra.\n";
+            continue;
+        }
+
+        std::cout << "Elige el numero del movimiento que quieres usar: ";
         int movIndex;
         std::cin >> movIndex;
-        while (movIndex < 0 || movIndex >= cartaUsada->getCantidadMovimientos()) {
-            std::cout << "Ese movimiento no es valido. Intenta otra vez: ";
+        while (movIndex < 0 || movIndex >= movimientosValidos.size()) {
+            std::cout << "Movimiento invalido. Intenta otra vez: ";
             std::cin >> movIndex;
         }
 
-        Movimiento mov = cartaUsada->getMovimiento(movIndex);
+        int filaDestino = movimientosValidos[movIndex].first;
+        int colDestino = movimientosValidos[movIndex].second;
 
-        // Los movimientos se invierten para el jugador rojo porque esta abajo
-        int direccion = (jugador->getColor() == 'r') ? -1 : 1;
+        tablero.moverFicha(filaOrigen, colOrigen, filaDestino, colDestino);
 
-        int filaDestino = filaOrigen + mov.dx * direccion;
-        int colDestino = colOrigen + mov.dy;
-
-        if (tablero.movimientoValidos(filaOrigen, colOrigen, filaDestino, colDestino)) {
-            tablero.moverFicha(filaOrigen, colOrigen, filaDestino, colDestino);
-
-            if (tablero.verificarReyEnDojo()) {
-                std::cout << "\nEl juego ha terminado porque un rey llego al dojo enemigo.\n";
-                juegoTerminado = true;
-                continue;
-            }
-
-            jugador->usarCarta(indiceCarta, cartaCentro);
-        } else {
-            std::cout << "\nEse movimiento no esta permitido. Intenta de nuevo.\n";
+        if (tablero.verificarReyEnDojo()) {
+            std::cout << "\nEl juego ha terminado porque un rey llego al dojo enemigo.\n";
+            juegoTerminado = true;
             continue;
         }
 
         turnoRojo = !turnoRojo;
+        jugador->usarCarta(indiceCarta, cartaCentro);
     }
 
     std::cout << "\nGracias por jugar.\n";

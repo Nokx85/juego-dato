@@ -2,6 +2,7 @@
 
 
 #include "Ficha.h"
+#include "Carta.h"
 
 class Tablero {
 
@@ -20,7 +21,7 @@ public:
     bool enRango(int fila, int columna) const;
     // valida si se puede mover a esta poscicion
 
-    bool movimientoValidos(int filaOrigen, int colOrigen, int filaDestino, int colDestino);
+    bool movimientoValidos(int filaOrigen, int colOrigen, int filaDestino, int colDestino)const;
     // muestra los movimientos posibles 
 
     void moverFicha(int filaOrigen, int colOrigen, int filaDestino, int colDestino);
@@ -36,6 +37,8 @@ public:
     // muestra la poscicion actual del tablero
     
     bool verificarReyEnDojo() const;
+
+    void mostrarMovimientosPosibles(int fila, int columna, const Carta* carta, char jugadorColor) const;
 
 
 
