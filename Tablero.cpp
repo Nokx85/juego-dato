@@ -50,12 +50,38 @@ void Tablero::moverFicha(int filaOrigen, int colOrigen, int filaDestino, int col
     casillas[filaOrigen][colOrigen] = nullptr;
 
     //actualisa la pos en la fila 
-    casillas[filaDestino][colDestino]->setPosicionFicha(filaDestino, colDestino);
+    // Actualizar posición
+    fOrigen->setPosicionFicha(filaDestino, colDestino);
+
+    // Verificar si se movió un Rey a un dojo enemigo
+    if (fOrigen->getTipo() == 'R') {
+        if (fOrigen->getDueno() == 'r' && filaDestino == 0 && colDestino == 2) {
+            std::cout << "¡El Rey Rojo llegó al dojo azul! Gana el jugador ROJO." << std::endl;
+           exit(0);
+    }
+    if (fOrigen->getDueno() == 'a' && filaDestino == 4 && colDestino == 2) {
+        std::cout << "¡El Rey Azul llegó al dojo rojo! Gana el jugador AZUL." << std::endl;
+        exit(0);
+    }
+}
 
 }
  // elimina la ficha si existe una ficha en la pos
 void Tablero::eliminarFicha(int fila, int columna){
-    if(casillas [fila][columna] != nullptr){
+    Ficha* ficha = casillas[fila][columna]; 
+    if(ficha != nullptr){
+        if(ficha->getTipo() == 'R' ){
+            if(ficha->getDueno() == 'a'){
+                 std::cout << "¡El Rey Azul ha sido capturado! Gana el jugador ROJO." << std::endl;
+                 exit(0); // cambiar
+            }
+            if(ficha->getDueno() == 'r'){
+                std::cout << "¡El Rey Azul ha sido capturado! Gana el jugador AZUL." << std::endl;
+                exit(0); // cambiar
+            }
+
+            
+        }
         delete casillas[fila][columna];
         casillas[fila][columna] = nullptr;
     }
@@ -79,4 +105,27 @@ void Tablero::mostrarTablero() const{
     }
 
 }
+
+bool Tablero::verificarReyEnDojo() const {
+    // Verifica si el Rey Rojo llegó al dojo azul
+    Ficha* fichaEnDojoAzul = casillas[0][2];
+    if (fichaEnDojoAzul &&
+        fichaEnDojoAzul->getTipo() == 'R' &&
+        fichaEnDojoAzul->getDueno() == 'r') {
+        std::cout << "¡El Rey Rojo llegó al dojo azul! Gana el jugador ROJO." << std::endl;
+        return true;
+    }
+
+    // Verifica si el Rey Azul llegó al dojo rojo
+    Ficha* fichaEnDojoRojo = casillas[4][2];
+    if (fichaEnDojoRojo &&
+        fichaEnDojoRojo->getTipo() == 'R' &&
+        fichaEnDojoRojo->getDueno() == 'a') {
+        std::cout << "¡El Rey Azul llegó al dojo rojo! Gana el jugador AZUL." << std::endl;
+        return true;
+    }
+
+    return false; // ningún rey ha llegado al dojo enemigo
+}
+
 
