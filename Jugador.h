@@ -1,22 +1,29 @@
 #pragma once
 
-#include <array>
 #include <iostream>
 #include "Carta.h"
+
+#include <queue>
 
 class Jugador{
 private:
     char color; // r rojo o azul
+    std::queue<Carta*> cartas;
 
 public:
-    std::array<Carta*, 2> cartas;
+    
 
     Jugador(char color);
 
-    void usarCarta(int indice, Carta*& cartaCentro);
+    void agregarCarta(Carta* carta);
+
+    void usarCarta(Carta*& cartaCentro);
 
     void mostrarCartas()const;
 
     char getColor()const;
+
+
+    Carta* getCartaFrente() const; 
 
 };

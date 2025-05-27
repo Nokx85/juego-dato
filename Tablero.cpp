@@ -138,45 +138,6 @@ bool Tablero::verificarReyEnDojo() const {
 }
 
 
-void Tablero::mostrarMovimientosPosibles(int fila, int columna, const Carta* carta, char jugadorColor) const {
-    char matriz[Filas][Columnas];
-
-    // Llenar la matriz con el contenido actual del tablero
-    for (int i = 0; i < Filas; ++i) {
-        for (int j = 0; j < Columnas; ++j) {
-            Ficha* f = getPosicionFicha(i, j);
-            if (f == nullptr) {
-                matriz[i][j] = '.';
-            } else {
-                matriz[i][j] = f->getTipo();
-            }
-        }
-    }
-
-    // Marcar los movimientos válidos desde la posición dada
-    for (int i = 0; i < carta->getCantidadMovimientos(); ++i) {
-        Movimiento mov = carta->getMovimiento(i);
-        int dx = mov.dx;
-        int dy = mov.dy;
-
-        
-        int nuevaFila = fila + dx;
-        int nuevaColumna = columna + dy;
-
-        if (movimientoValidos(fila, columna, nuevaFila, nuevaColumna)) {
-            matriz[nuevaFila][nuevaColumna] = 'x';
-        }
-    }
-
-    // Mostrar la matriz con los posibles movimientos marcados
-    std::cout << "\nMovimientos posibles marcados con 'x':\n";
-    for (int i = 0; i < Filas; ++i) {
-        for (int j = 0; j < Columnas; ++j) {
-            std::cout << matriz[i][j] << ' ';
-        }
-        std::cout << '\n';
-    }
-}
 
 
 

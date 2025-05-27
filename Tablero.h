@@ -38,8 +38,7 @@ public:
     
     bool verificarReyEnDojo() const;
 
-    void mostrarMovimientosPosibles(int fila, int columna, const Carta* carta, char jugadorColor) const;
-
+   
 
 
 private:
