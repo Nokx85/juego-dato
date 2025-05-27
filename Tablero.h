@@ -34,6 +34,9 @@ public:
 
     void mostrarTablero()const;
     // muestra la poscicion actual del tablero
+    
+    bool verificarReyEnDojo() const;
+
 
 
 private:
