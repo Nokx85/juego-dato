@@ -9,6 +9,9 @@
 #include "Rey.h"
 #include "Peon.h"
 #include "Jugador.h"
+
+#include "GameState.hpp"
+
 #include <iostream>
 #include <vector>
 
