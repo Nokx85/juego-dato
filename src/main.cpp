@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <vector>
+#include <limits>
 
 int main() {
     Tablero tablero;
@@ -60,10 +61,10 @@ int main() {
 
         std::cout << "Elige una carta (0 o 1): ";
         int indiceCarta;
-        std::cin >> indiceCarta;
-        while (indiceCarta != 0 && indiceCarta != 1) {
+        while (!(std::cin >> indiceCarta) || (indiceCarta != 0 && indiceCarta != 1)) {
             std::cout << "Esa carta no es valida. Intenta otra vez: ";
-            std::cin >> indiceCarta;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
 
         Carta* cartaUsada = jugador->cartas[indiceCarta];
@@ -87,10 +88,11 @@ int main() {
 
         int eleccionFicha = -1;
         std::cout << "Elige el numero de la ficha que quieres mover: ";
-        std::cin >> eleccionFicha;
-        while (eleccionFicha < 0 || eleccionFicha >= posiciones.size()) {
+        while (!(std::cin >> eleccionFicha) ||
+               eleccionFicha < 0 || eleccionFicha >= posiciones.size()) {
             std::cout << "Numero invalido. Intenta otra vez: ";
-            std::cin >> eleccionFicha;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
 
         int filaOrigen = posiciones[eleccionFicha].first;
@@ -101,6 +103,8 @@ int main() {
             std::cout << "No puedes mover esa ficha. Intenta de nuevo.\n";
             continue;
         }
+
+        tablero.mostrarMovimientosPosibles(filaOrigen, colOrigen, cartaUsada, jugador->getColor());
 
         // Mostrar y guardar los movimientos válidos numerados
         std::vector<std::pair<int, int>> movimientosValidos;
@@ -123,10 +127,10 @@ int main() {
 
         std::cout << "Elige el numero del movimiento que quieres usar: ";
         int movIndex;
-        std::cin >> movIndex;
-        while (movIndex < 0 || movIndex >= movimientosValidos.size()) {
+        while (!(std::cin >> movIndex) || movIndex < 0 || movIndex >= movimientosValidos.size()) {
             std::cout << "Movimiento invalido. Intenta otra vez: ";
-            std::cin >> movIndex;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
 
         int filaDestino = movimientosValidos[movIndex].first;
