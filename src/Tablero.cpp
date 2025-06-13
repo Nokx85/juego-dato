@@ -84,7 +84,7 @@ void Tablero::eliminarFicha(int fila, int columna){
                  
             }
             if(ficha->getDueno() == 'r'){
-                std::cout << "¡El Rey Azul ha sido capturado! Gana el jugador AZUL." << std::endl;
+                std::cout << "¡El Rey Rojo ha sido capturado! Gana el jugador AZUL." << std::endl;
                 std::cout << "[DEBUG] Saliendo del juego por victoria." << std::endl;
 
                 
@@ -139,32 +139,26 @@ bool Tablero::verificarReyEnDojo() const {
 
 
 void Tablero::mostrarMovimientosPosibles(int fila, int columna, const Carta* carta, char jugadorColor) const {
-    char matriz[Filas][Columnas];
+    bool marcados[Filas][Columnas] = {false};
 
-    // Llenar la matriz con el contenido actual del tablero
-    for (int i = 0; i < Filas; ++i) {
-        for (int j = 0; j < Columnas; ++j) {
-            Ficha* f = getPosicionFicha(i, j);
-            if (f == nullptr) {
-                matriz[i][j] = '.';
-            } else {
-                matriz[i][j] = f->getTipo();
-            }
-        }
-    }
+
 
     // Marcar los movimientos válidos desde la posición dada
+    Ficha* fichaOrigen = getPosicionFicha(fila, columna);
+    if (!fichaOrigen || fichaOrigen->getDueno() != jugadorColor) {
+        std::cout << "[DEBUG] Posicion de origen invalida para el jugador " << jugadorColor << "\n";
+        return;
+    }
+
+
     for (int i = 0; i < carta->getCantidadMovimientos(); ++i) {
         Movimiento mov = carta->getMovimiento(i);
-        int dx = mov.dx;
-        int dy = mov.dy;
-
+        int nuevaFila = fila + mov.dx;
+        int nuevaColumna = columna + mov.dy;
         
-        int nuevaFila = fila + dx;
-        int nuevaColumna = columna + dy;
 
         if (movimientoValidos(fila, columna, nuevaFila, nuevaColumna)) {
-            matriz[nuevaFila][nuevaColumna] = 'x';
+            marcados[nuevaFila][nuevaColumna] = true;
         }
     }
 
@@ -172,7 +166,13 @@ void Tablero::mostrarMovimientosPosibles(int fila, int columna, const Carta* car
     std::cout << "\nMovimientos posibles marcados con 'x':\n";
     for (int i = 0; i < Filas; ++i) {
         for (int j = 0; j < Columnas; ++j) {
-            std::cout << matriz[i][j] << ' ';
+            if (marcados[i][j]) {
+                std::cout << "x  ";
+            } else if (casillas[i][j] == nullptr) {
+                std::cout << ".  ";
+            } else {
+                std::cout << casillas[i][j]->getTipo() << casillas[i][j]->getDueno() << " ";
+            }
         }
         std::cout << '\n';
     }
