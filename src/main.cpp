@@ -74,17 +74,8 @@ int main() {
 
         std::vector<std::pair<int, int>> posiciones;
         std::cout << "Fichas disponibles para mover:\n";
-        int index = 0;
-        for (int i = 0; i < 5; ++i) {
-            for (int j = 0; j < 5; ++j) {
-                Ficha* f = tablero.getPosicionFicha(i, j);
-                if (f != nullptr && f->getDueno() == jugador->getColor()) {
-                    std::cout << index << ": " << f->getTipo() << " en (" << i << "," << j << ")\n";
-                    posiciones.push_back({i, j});
-                    ++index;
-                }
-            }
-        }
+        tablero.mostrarFichasJugador(jugador->getColor());
+
 
         int eleccionFicha = -1;
         std::cout << "Elige el numero de la ficha que quieres mover: ";
@@ -136,7 +127,7 @@ int main() {
         int filaDestino = movimientosValidos[movIndex].first;
         int colDestino = movimientosValidos[movIndex].second;
 
-        tablero.moverFicha(filaOrigen, colOrigen, filaDestino, colDestino);
+        tablero.moverFicha(filaOrigen, colOrigen, filaDestino, colDestino, juegoTerminado);
 
         if (tablero.verificarReyEnDojo()) {
             std::cout << "\nEl juego ha terminado porque un rey llego al dojo enemigo.\n";
