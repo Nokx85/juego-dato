@@ -1,6 +1,6 @@
 #include "Tablero.h"
 #include <iostream>
-
+#include <vector>
 
 
 Tablero::Tablero(){
@@ -36,14 +36,14 @@ bool Tablero::movimientoValidos(int filaOrigen, int colOrigen, int filaDestino, 
 }
 
 
-void Tablero::moverFicha(int filaOrigen, int colOrigen, int filaDestino, int colDestino){
+void Tablero::moverFicha(int filaOrigen, int colOrigen, int filaDestino, int colDestino, bool &juegoTerminado){
     // por si no existe una ficha en la poscion origen
     Ficha* fOrigen = casillas[filaOrigen][colOrigen];
     if (!fOrigen) return;
 
     // existe una ficha en esta poscicion? si es asi la borra(captura)
     if(casillas [filaDestino][colDestino] != nullptr){
-        eliminarFicha(filaDestino, colDestino);
+        eliminarFicha(filaDestino, colDestino,juegoTerminado);
     }
 
     //mueve la ficha
@@ -55,37 +55,27 @@ void Tablero::moverFicha(int filaOrigen, int colOrigen, int filaDestino, int col
     fOrigen->setPosicionFicha(filaDestino, colDestino);
 
     // Verificar si se movió un Rey a un dojo enemigo
-    if (fOrigen->getTipo() == 'R') {
-        if (fOrigen->getDueno() == 'r' && filaDestino == 0 && colDestino == 2) {
-            std::cout << "¡El Rey Rojo llegó al dojo azul! Gana el jugador ROJO." << std::endl;
-           std::cout << "[DEBUG] Saliendo del juego por victoria." << std::endl;
-
-            
-    }
-    if (fOrigen->getDueno() == 'a' && filaDestino == 4 && colDestino == 2) {
-        std::cout << "¡El Rey Azul llegó al dojo rojo! Gana el jugador AZUL." << std::endl;
-        std::cout << "[DEBUG] Saliendo del juego por victoria." << std::endl;
-
-        
+    if (verificarReyEnDojo()) {
+        // Si la función retorna true, ya se ha producido una victoria, por lo que no se sigue ejecutando más código
+        juegoTerminado = true;
     }
 
-}
+
 
 }
  // elimina la ficha si existe una ficha en la pos
-void Tablero::eliminarFicha(int fila, int columna){
+void Tablero::eliminarFicha(int fila, int columna, bool &juegoTerminado){
     Ficha* ficha = casillas[fila][columna]; 
     if(ficha != nullptr){
         if(ficha->getTipo() == 'R' ){
             if(ficha->getDueno() == 'a'){
                  std::cout << "¡El Rey Azul ha sido capturado! Gana el jugador ROJO." << std::endl;
-                 std::cout << "[DEBUG] Saliendo del juego por victoria." << std::endl;
-
-                 
+                 juegoTerminado = true;
+                   
             }
             if(ficha->getDueno() == 'r'){
                 std::cout << "¡El Rey Rojo ha sido capturado! Gana el jugador AZUL." << std::endl;
-                std::cout << "[DEBUG] Saliendo del juego por victoria." << std::endl;
+                juegoTerminado = true;
 
                 
             }
@@ -100,6 +90,22 @@ void Tablero::eliminarFicha(int fila, int columna){
 Ficha* Tablero::getPosicionFicha(int fila, int columna) const{
     return casillas[fila][columna];
 }
+
+void Tablero::mostrarFichasJugador(char jugadorColor) const {
+    std::vector<std::pair<int, int>> posiciones;
+    int index = 0;
+    for (int i = 0; i < Filas; ++i) {
+        for (int j = 0; j < Columnas; ++j) {
+            Ficha* f = casillas[i][j];
+            if (f != nullptr && f->getDueno() == jugadorColor) {
+                std::cout << index << ": " << f->getTipo() << " en (" << i << "," << j << ")\n";
+                posiciones.push_back({i, j});
+                ++index;
+            }
+        }
+    }
+}
+
 
 void Tablero::mostrarTablero() const{
     for(int fila = 0; fila < 5; fila++ ){
