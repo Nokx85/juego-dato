@@ -1,6 +1,16 @@
 #include <SFML/Graphics.hpp>
 #include "mainMenu.h"
-using namespace sf; 
+#include "BoardView.h"
+#include "../src/CartaLeon.h"
+#include "../src/CartaFenix.h"
+#include "../src/CartaTigre.h"
+#include "../src/CartaOso.h"
+#include "../src/CartaDragon.h"
+#include "../src/Rey.h"
+#include "../src/Peon.h"
+#include "../src/Tablero.h"
+#include "../src/Jugador.h"
+using namespace sf;
 
 int main() {
     // Creamos la ventana principal
@@ -41,28 +51,57 @@ int main() {
                 }
                 
                 if (event.key.code == Keyboard::Return) {
-                    RenderWindow Play(VideoMode(960, 720), "game_video");
+                    RenderWindow Play(VideoMode(960, 720), "Tablero", Style::Default);
                     RenderWindow OPTIONS(VideoMode(960, 720), "OPTIONS");
                     
                     int x = mainMenu.MainMenuPressed();
                     if (x == 0) {  // Jugar
+                        // Inicializar tablero y jugadores
+                        Tablero tablero;
+                        Jugador jugadorAzul('a');
+                        Jugador jugadorRojo('r');
+
+                        jugadorAzul.cartas[0] = new CartaLeon();
+                        jugadorAzul.cartas[1] = new CartaFenix();
+
+                        jugadorRojo.cartas[0] = new CartaTigre();
+                        jugadorRojo.cartas[1] = new CartaOso();
+
+                        Carta* cartaCentro = new CartaDragon();
+
+                        tablero.colocarFicha(new Rey('a'), 0, 2);
+                        tablero.colocarFicha(new Rey('r'), 4, 2);
+                        tablero.colocarFicha(new Peon('a'), 0, 1);
+                        tablero.colocarFicha(new Peon('a'), 0, 3);
+                        tablero.colocarFicha(new Peon('r'), 4, 1);
+                        tablero.colocarFicha(new Peon('r'), 4, 3);
+
+                        bool turnoRojo = true;
+
+                        BoardView view;
+                        view.loadResources();
+
                         while (Play.isOpen()) {
-                            Event aevent; 
+                            Event aevent;
                             while (Play.pollEvent(aevent)) {
                                 if (aevent.type == Event::Closed) {
                                     Play.close();
                                 }
-                                if (aevent.type == Event::KeyPressed) {
-                                    if (aevent.key.code == Keyboard::Escape) {
-                                        Play.close();
-                                    }
+                                if (aevent.type == Event::KeyPressed && aevent.key.code == Keyboard::Escape) {
+                                    Play.close();
+                                }
+                                if (aevent.type == Event::KeyPressed && aevent.key.code == Keyboard::Space) {
+                                    turnoRojo = !turnoRojo; // alternar turno para demostracion
                                 }
                             }
 
-                            OPTIONS.close();
+                            const Jugador& jugadorActual = turnoRojo ? jugadorRojo : jugadorAzul;
+
                             Play.clear();
+                            view.draw(Play, tablero, jugadorActual, cartaCentro);
                             Play.display();
                         }
+                        delete cartaCentro;
                     }
                     if (x == 1) {  // Opciones
                         while (OPTIONS.isOpen()) {
