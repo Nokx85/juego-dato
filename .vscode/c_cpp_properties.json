@@ -6,26 +6,24 @@
       "compilerPath": "C:/msys64/mingw64/bin/g++.exe",
       "intelliSenseMode": "windows-gcc-x64",
       "includePath": [
-        "${workspaceFolder}/src",
-        "${workspaceFolder}/src/**",
-        "C:/msys64/mingw64/include",
-        "C:/msys64/mingw64/include/**"
+        "${workspaceFolder}/src",  // Busca en el directorio src
+        "C:/msys64/mingw64/include",  // Añade la ruta de MinGW
+        "C:/msys64/mingw64/include/**"  // Incluye todos los subdirectorios dentro de MinGW
       ],
       "browse": {
         "path": [
-          "${workspaceFolder}/src",
-          "C:/msys64/mingw64/include",
-          "C:/msys64/mingw64/include/**"
+          "${workspaceFolder}/src",  // Directorio src del proyecto
+          "C:/msys64/mingw64/include"  // Ruta de MinGW para exploración de símbolos
         ],
-        "limitSymbolsToIncludedHeaders": true
+        "limitSymbolsToIncludedHeaders": true  // Limitar los símbolos solo a los encabezados incluidos
       },
       "defines": [
         "_DEBUG",
         "UNICODE",
         "_UNICODE"
       ],
-      "cStandard": "c17",
-      "cppStandard": "gnu++17"
+      "cStandard": "c17",  // Usar el estándar C17
+      "cppStandard": "c++17"  // Usar el estándar C++17
     }
   ]
 }
