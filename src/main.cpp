@@ -81,6 +81,21 @@ int main() {
                         const float boardSize = 500.f;
                         const float tileSize = boardSize / Tablero::Filas;
 
+                                                Texture boardTexture;
+                        Sprite boardSprite;
+                        bool boardLoaded = boardTexture.loadFromFile("files/fondoTablero.jpg");
+                        if(boardLoaded){
+                            boardSprite.setTexture(boardTexture);
+                            boardSprite.setScale(boardSize / boardTexture.getSize().x,
+                                                 boardSize / boardTexture.getSize().y);
+                        }
+
+                        Texture tPawnRed, tPawnBlue, tKingRed, tKingBlue;
+                        bool pawnRedOk  = tPawnRed.loadFromFile("files/pawn_red.png");
+                        bool pawnBlueOk = tPawnBlue.loadFromFile("files/pawn_blue.png");
+                        bool kingRedOk  = tKingRed.loadFromFile("files/reyRojo.png");
+                        bool kingBlueOk = tKingBlue.loadFromFile("files/king_blue.png");
+
                         Font font;
                         font.loadFromFile("files/Minecraft.ttf");
 
@@ -156,39 +171,74 @@ int main() {
                             }
 
                             gameWindow.clear();
-
                             // --- Dibujar cuadrícula ---
+                             if(boardLoaded)
+                                gameWindow.draw(boardSprite);
+
                             for (int i = 0; i < Tablero::Filas; ++i) {
                                 for (int j = 0; j < Tablero::Columnas; ++j) {
                                     RectangleShape square(Vector2f(tileSize, tileSize));
                                     square.setPosition(j * tileSize, i * tileSize);
-                                    if ((i + j) % 2 == 0)
-                                        square.setFillColor(Color(200, 200, 200));
-                                    else
-                                        square.setFillColor(Color(100, 100, 100));
 
-                                    if(i==selRow && j==selCol)
-                                        square.setOutlineThickness(3), square.setOutlineColor(Color::Yellow);
+                                       if(!boardLoaded){
+                                        if ((i + j) % 2 == 0)
+                                            square.setFillColor(Color(200, 200, 200));
+                                        else
+                                            square.setFillColor(Color(100, 100, 100));
+                                    }else{
+                                        square.setFillColor(Color::Transparent);
+                                    }
+
+                                    if(i==selRow && j==selCol){
+                                        square.setOutlineThickness(3);
+                                        square.setOutlineColor(Color::Yellow);
+                                    }
                                     gameWindow.draw(square);
 
                                     Ficha* f = tablero.getPosicionFicha(i, j);
                                     if (f) {
-                                        CircleShape piece(tileSize / 2.f - 8.f);
-                                        piece.setPosition(j * tileSize + 8.f, i * tileSize + 8.f);
-                                        if (f->getDueno() == 'r')
-                                            piece.setFillColor(Color::Red);
-                                        else
-                                            piece.setFillColor(Color::Blue);
-                                        gameWindow.draw(piece);
+                                         bool drewSprite = false;
+                                        Sprite sp;
+                                        if(f->getTipo()=='P'){
+                                            if(f->getDueno()=='r' && pawnRedOk){
+                                                sp.setTexture(tPawnRed);
+                                                drewSprite=true;
+                                            }else if(f->getDueno()=='a' && pawnBlueOk){
+                                                sp.setTexture(tPawnBlue);
+                                                drewSprite=true;
+                                            }
+                                        }else if(f->getTipo()=='R'){
+                                            if(f->getDueno()=='r' && kingRedOk){
+                                                sp.setTexture(tKingRed);
+                                                drewSprite=true;
+                                            }else if(f->getDueno()=='a' && kingBlueOk){
+                                                sp.setTexture(tKingBlue);
+                                                drewSprite=true;
+                                            }
+                                        }
+                                        if(drewSprite){
+                                            sp.setPosition(j*tileSize, i*tileSize);
+                                            sp.setScale(tileSize / sp.getTexture()->getSize().x,
+                                                        tileSize / sp.getTexture()->getSize().y);
+                                            gameWindow.draw(sp);
+                                        }else{
+                                            CircleShape piece(tileSize / 2.f - 8.f);
+                                            piece.setPosition(j * tileSize + 8.f, i * tileSize + 8.f);
+                                            if (f->getDueno() == 'r')
+                                                piece.setFillColor(Color::Red);
+                                            else
+                                                piece.setFillColor(Color::Blue);
+                                            gameWindow.draw(piece);
 
-                                        Text label;
-                                        label.setFont(font);
-                                        label.setString(std::string(1, f->getTipo()));
-                                        label.setCharacterSize(24);
-                                        label.setFillColor(Color::White);
-                                        label.setPosition(j * tileSize + tileSize/2 - 8,
-                                                          i * tileSize + tileSize/2 - 12);
-                                        gameWindow.draw(label);
+                                            Text label;
+                                            label.setFont(font);
+                                            label.setString(std::string(1, f->getTipo()));
+                                            label.setCharacterSize(24);
+                                            label.setFillColor(Color::White);
+                                            label.setPosition(j * tileSize + tileSize/2 - 8,
+                                                              i * tileSize + tileSize/2 - 12);
+                                            gameWindow.draw(label);
+                                        }
                                     }
                                 }
                             }
@@ -231,7 +281,12 @@ int main() {
 
                         return 0;
                     }
-                    // ... Opciones y Salir quedan igual
+                    else if (x == 2) { // Salir
+                        MENU.close();
+                        return 0;
+                    }
+                    // Opciones quedan igual por ahora
+                    
                 }
             }
         }
