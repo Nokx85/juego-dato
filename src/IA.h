@@ -17,7 +17,11 @@ public:
     IA();  // Constructor de la IA
 
     // Obtiene el mejor movimiento usando Minimax con poda alfa-beta
-    MovimientoIA obtenerMejorMovimiento(const Tablero& tablero,  const std::array<Carta*,2>& cartas, int profundidad, char jugadorColor);
+    // Calcula el mejor movimiento considerando las cartas del jugador y del enemigo
+    MovimientoIA obtenerMejorMovimiento(const Tablero& tablero,
+                                        const std::array<Carta*,2>& cartasJugador,
+                                        const std::array<Carta*,2>& cartasEnemigo,
+                                        int profundidad, char jugadorColor);
 
     // Método para evaluar el estado del tablero (básico, se puede mejorar)
     int evaluarEstado(const Tablero& tablero, char jugadorColor);
