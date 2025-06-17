@@ -91,10 +91,10 @@ int main() {
                         }
 
                         Texture tPawnRed, tPawnBlue, tKingRed, tKingBlue;
-                        bool pawnRedOk  = tPawnRed.loadFromFile("files/pawn_red.png");
-                        bool pawnBlueOk = tPawnBlue.loadFromFile("files/pawn_blue.png");
+                        bool pawnRedOk  = tPawnRed.loadFromFile("files/peonRojo.png");
+                        bool pawnBlueOk = tPawnBlue.loadFromFile("files/peonAzul.png");
                         bool kingRedOk  = tKingRed.loadFromFile("files/reyRojo.png");
-                        bool kingBlueOk = tKingBlue.loadFromFile("files/king_blue.png");
+                        bool kingBlueOk = tKingBlue.loadFromFile("files/reyAzul.png");
 
                         Font font;
                         font.loadFromFile("files/Minecraft.ttf");
