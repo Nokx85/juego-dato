@@ -74,7 +74,7 @@ int main() {
 
         std::vector<std::pair<int, int>> posiciones;
         std::cout << "Fichas disponibles para mover:\n";
-        tablero.mostrarFichasJugador(jugador->getColor());
+        tablero.mostrarFichasJugador(jugador->getColor(), posiciones);
 
 
         int eleccionFicha = -1;

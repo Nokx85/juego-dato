@@ -4,6 +4,9 @@
 #include "Ficha.h"
 #include "Carta.h"
 
+#include <vector>
+
+
 class Tablero {
 
 public:
@@ -21,11 +24,9 @@ public:
     bool enRango(int fila, int columna) const;
     // valida si se puede mover a esta poscicion
 
-    bool movimientoValidos(int filaOrigen, int colOrigen, int filaDestino, int colDestino)const;
-    // muestra los movimientos posibles 
+   bool movimientoValidos(int filaOrigen, int colOrigen,int filaDestino, int colDestino) const;
 
-    void moverFicha(int filaOrigen, int colOrigen, int filaDestino, int colDestino, bool &juegoTerminado);
-    // mueve una ficha de un punto a otro (moviento)
+    void moverFicha(int filaOrigen, int colOrigen,int filaDestino, int colDestino,bool &juegoTerminado);
 
     void eliminarFicha(int fila, int columna, bool &juegoTerminado);
     // elimina una ficha ( por captura o victoria)
@@ -33,9 +34,8 @@ public:
     Ficha* getPosicionFicha(int fila, int columna) const;
     // devuelve cual ficha esta en esta poscicion del tablero 
 
-    void mostrarFichasJugador(char jugadorColor) const ;
-    // muestra las fichas para el juego 
-
+    // Muestra las fichas del jugador y almacena sus posiciones
+    void mostrarFichasJugador(char jugadorColor,std::vector<std::pair<int,int>>& posiciones) const;
 
     void mostrarTablero()const;
     // muestra la poscicion actual del tablero
@@ -43,7 +43,6 @@ public:
     bool verificarReyEnDojo() const;
 
     void mostrarMovimientosPosibles(int fila, int columna, const Carta* carta, char jugadorColor) const;
-
 
 
 private:
