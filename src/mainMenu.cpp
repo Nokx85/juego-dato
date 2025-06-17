@@ -1,5 +1,5 @@
 #include "mainMenu.h"
-//con esto emos el tipo de letra ue va a tener el menu
+//con esto vemos el tipo de letra ue va a tener el menu
 MainMenu::MainMenu(float width ,float height){
 if (!font.loadFromFile("files/Minecraft.ttf"))
 {
