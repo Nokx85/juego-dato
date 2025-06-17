@@ -8,5 +8,8 @@ CartaDragon::CartaDragon(){
     movimientos[2] = {-1, 1};   // diagonal arriba-derecha
     movimientos[3] = {-1, -1};  // diagonal arriba-izquierda
 
+}
 
+std::string CartaDragon::getNombre() const {
+    return "Dragon";
 }

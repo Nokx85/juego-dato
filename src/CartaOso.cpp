@@ -7,4 +7,8 @@ CartaOso::CartaOso(){
     movimientos[1] = {1, -1};  // diagonal adelante-izquierda
     movimientos[2] = {0, -2};   // 1 paso a la izquierda
 
+    }
+
+std::string CartaOso::getNombre() const {
+    return "Oso";
 }

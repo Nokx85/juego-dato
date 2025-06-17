@@ -8,5 +8,9 @@ CartaTigre::CartaTigre(){
 
     // Movimiento hacia abajo (fila +1), sin cambiar columna
     movimientos[1] = {0, -1};
+    }
+
+std::string CartaTigre::getNombre() const {
+    return "Tigre";
     
 }

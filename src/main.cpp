@@ -39,7 +39,7 @@ void inicializarTablero(Tablero& tablero) {
 int main() {
 
     
-    RenderWindow MENU(VideoMode(960, 720), "Main Menu", Style::Default);
+     RenderWindow MENU(VideoMode(960, 720), "Main Menu", Style::Default);
     MainMenu mainMenu(MENU.getSize().x, MENU.getSize().y);
 
     // Fondo del menú (igual que antes)...
@@ -64,24 +64,95 @@ int main() {
                     if (x == 0) {  // **Jugar**
                         // Cerramos el menú y abrimos la ventana de juego
                         MENU.close();
-                        RenderWindow gameWindow(VideoMode(500, 500), "Onitama");
-                        
-                        // 1) Instanciamos y rellenamos el tablero
+                        RenderWindow gameWindow(VideoMode(700, 500), "Onitama");
+
+                        // Preparar tablero y jugadores
                         Tablero tablero;
                         inicializarTablero(tablero);
 
-                        // 2) Preparamos tamaño de cada casilla
-                        const float tileSize = 500.f / Tablero::Filas;
+                        Jugador jugadorAzul('a');
+                        Jugador jugadorRojo('r');
+                        jugadorAzul.cartas[0] = new CartaLeon();
+                        jugadorAzul.cartas[1] = new CartaFenix();
+                        jugadorRojo.cartas[0] = new CartaTigre();
+                        jugadorRojo.cartas[1] = new CartaOso();
+                        Carta* cartaCentro = new CartaDragon();
 
-                        // Bucle principal del juego
+                        const float boardSize = 500.f;
+                        const float tileSize = boardSize / Tablero::Filas;
+
+                        Font font;
+                        font.loadFromFile("files/Minecraft.ttf");
+
+                        bool turnoRojo = true;
+                        int selectedCard = -1;
+                        int selRow = -1, selCol = -1;
+                        std::vector<std::pair<int,int>> validMoves;
+
+                        auto calcularMovimientos = [&](int fila, int col, Carta* carta){
+                            validMoves.clear();
+                            for(int i=0;i<carta->getCantidadMovimientos();++i){
+                                Movimiento m = carta->getMovimiento(i);
+                                int nf = fila + m.dx;
+                                int nc = col + m.dy;
+                                if(tablero.movimientoValidos(fila,col,nf,nc))
+                                    validMoves.push_back({nf,nc});
+                            }
+                        };
+
                         while (gameWindow.isOpen()) {
                             Event gevent;
                             while (gameWindow.pollEvent(gevent)) {
                                 if (gevent.type == Event::Closed)
                                     gameWindow.close();
-                                if (gevent.type == Event::KeyPressed &&
-                                    gevent.key.code == Keyboard::Escape)
+                                if (gevent.type == Event::KeyPressed && gevent.key.code == Keyboard::Escape)
                                     gameWindow.close();
+                                if (gevent.type == Event::MouseButtonPressed && gevent.mouseButton.button == Mouse::Left) {
+                                    Vector2f mp(gevent.mouseButton.x, gevent.mouseButton.y);
+                                    if(mp.x < boardSize && mp.y < boardSize) {
+                                        int row = mp.y / tileSize;
+                                        int col = mp.x / tileSize;
+                                        char colorTurno = turnoRojo ? 'r' : 'a';
+                                        if(selRow == -1) {
+                                            if(selectedCard != -1) {
+                                                Ficha* f = tablero.getPosicionFicha(row,col);
+                                                if(f && f->getDueno()==colorTurno){
+                                                    selRow=row; selCol=col;
+                                                    Carta* c = turnoRojo ? jugadorRojo.cartas[selectedCard] : jugadorAzul.cartas[selectedCard];
+                                                    calcularMovimientos(row,col,c);
+                                                }
+                                            }
+                                        } else {
+                                            for(auto mv: validMoves){
+                                                if(mv.first==row && mv.second==col){
+                                                    bool fin=false;
+                                                    tablero.moverFicha(selRow,selCol,row,col,fin);
+                                                    Jugador& jug = turnoRojo ? jugadorRojo : jugadorAzul;
+                                                    jug.usarCarta(selectedCard,cartaCentro);
+                                                    turnoRojo = !turnoRojo;
+                                                    selectedCard = -1;
+                                                    selRow = selCol = -1;
+                                                    validMoves.clear();
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        // Seleccion de carta
+                                        FloatRect cardAreas[3] = {
+                                            {520, 40, 160, 60},
+                                            {520, 120, 160, 60},
+                                            {520, 200, 160, 60}
+                                        };
+                                        for(int i=0;i<2;++i){
+                                            if(cardAreas[i].contains(mp)){
+                                                selectedCard = i;
+                                                selRow = selCol = -1;
+                                                validMoves.clear();
+                                            }
+                                        }
+                                    }
+                                }
                             }
 
                             gameWindow.clear();
@@ -91,32 +162,26 @@ int main() {
                                 for (int j = 0; j < Tablero::Columnas; ++j) {
                                     RectangleShape square(Vector2f(tileSize, tileSize));
                                     square.setPosition(j * tileSize, i * tileSize);
-                                    // Tablero a cuadros claro/oscuro
                                     if ((i + j) % 2 == 0)
                                         square.setFillColor(Color(200, 200, 200));
                                     else
                                         square.setFillColor(Color(100, 100, 100));
+
+                                    if(i==selRow && j==selCol)
+                                        square.setOutlineThickness(3), square.setOutlineColor(Color::Yellow);
                                     gameWindow.draw(square);
 
-                                    // --- Si hay ficha, la dibujamos encima ---
                                     Ficha* f = tablero.getPosicionFicha(i, j);
                                     if (f) {
-                                        // Podemos usar un círculo para representar
                                         CircleShape piece(tileSize / 2.f - 8.f);
-                                        piece.setPosition(j * tileSize + 8.f,
-                                                          i * tileSize + 8.f);
-                                        // Color según dueño
+                                        piece.setPosition(j * tileSize + 8.f, i * tileSize + 8.f);
                                         if (f->getDueno() == 'r')
                                             piece.setFillColor(Color::Red);
                                         else
                                             piece.setFillColor(Color::Blue);
                                         gameWindow.draw(piece);
 
-                                        // Opcional: dibujar el tipo de pieza
                                         Text label;
-                                        static Font font;
-                                        if (font.getInfo().family.empty())
-                                            font.loadFromFile("files/Minecraft.ttf");
                                         label.setFont(font);
                                         label.setString(std::string(1, f->getTipo()));
                                         label.setCharacterSize(24);
@@ -128,8 +193,43 @@ int main() {
                                 }
                             }
 
+                            // mostrar movimientos validos
+                            for(auto mv: validMoves){
+                                CircleShape hint(tileSize/2 - 20);
+                                hint.setFillColor(Color(0,255,0,120));
+                                hint.setPosition(mv.second*tileSize+20, mv.first*tileSize+20);
+                                gameWindow.draw(hint);
+                            }
+
+                            // Dibujar cartas
+                            FloatRect cardAreas[3] = {
+                                {520, 40, 160, 60},
+                                {520, 120, 160, 60},
+                                {520, 200, 160, 60}
+                            };
+                            Jugador& jugadorAct = turnoRojo ? jugadorRojo : jugadorAzul;
+                            Carta* cartasMostrar[3] = {jugadorAct.cartas[0], jugadorAct.cartas[1], cartaCentro};
+                            for(int i=0;i<3;++i){
+                                RectangleShape rect(Vector2f(cardAreas[i].width, cardAreas[i].height));
+                                rect.setPosition(cardAreas[i].left, cardAreas[i].top);
+                                rect.setFillColor(Color(150,150,150));
+                                rect.setOutlineThickness((i==selectedCard)?3:1);
+                                rect.setOutlineColor((i==selectedCard)?Color::Yellow:Color::Black);
+                                gameWindow.draw(rect);
+
+                                Text t;
+                                t.setFont(font);
+                                t.setString(cartasMostrar[i]->getNombre());
+                                t.setCharacterSize(20);
+                                t.setFillColor(Color::Black);
+                                t.setPosition(cardAreas[i].left + 10, cardAreas[i].top + 20);
+                                gameWindow.draw(t);
+                            }
+
                             gameWindow.display();
                         }
+
+                        return 0;
                     }
                     // ... Opciones y Salir quedan igual
                 }
@@ -141,6 +241,7 @@ int main() {
         mainMenu.draw(MENU);
         MENU.display();
     }
+
 
 
 

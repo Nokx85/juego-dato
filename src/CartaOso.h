@@ -5,5 +5,5 @@ class CartaOso : public Carta{
 
 public:
     CartaOso();
-
+std::string getNombre() const override;
 };
