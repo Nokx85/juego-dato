@@ -91,8 +91,8 @@ Ficha* Tablero::getPosicionFicha(int fila, int columna) const{
     return casillas[fila][columna];
 }
 
-void Tablero::mostrarFichasJugador(char jugadorColor) const {
-    std::vector<std::pair<int, int>> posiciones;
+void Tablero::mostrarFichasJugador(char jugadorColor,std::vector<std::pair<int,int>>& posiciones) const {
+    posiciones.clear();
     int index = 0;
     for (int i = 0; i < Filas; ++i) {
         for (int j = 0; j < Columnas; ++j) {
