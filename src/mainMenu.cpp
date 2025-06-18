@@ -26,7 +26,7 @@ mainMenu[2].setString("Salir");
 mainMenu[2].setCharacterSize(50);
 mainMenu[2].setPosition(400,450);
 
-MainMenuSelected = -1 ; 
+MainMenuSelected = 0 ; 
 
 }
 
