@@ -25,14 +25,13 @@ void inicializarTablero(Tablero& tablero) {
     // Ejemplo: coloca los reyes y peones; ajusta filas/columnas según tu lógica
     // Asume que Ficha tiene un constructor Ficha(char tipo, char dueno)
     tablero.colocarFicha(new Ficha ('R',false,'r'), 4, 2);   // Rey rojo
-    tablero.colocarFicha(new Ficha('R',false,'a'), 0, 2);   // Rey azul
-    // Coloca peones rojos
-    for(int j=0; j<5; ++j)
-        tablero.colocarFicha(new Ficha('P',false,'r'), 3, j);
-    // Coloca peones azules
-    for(int j=0; j<5; ++j)
-        tablero.colocarFicha(new Ficha('P',false,'a'), 1, j);
-    // ... y así con todas tus piezas y cartas
+    tablero.colocarFicha(new Ficha('R',false,'a'), 0, 2);    // Rey azul
+
+    // Solo dos peones al lado de cada rey
+    tablero.colocarFicha(new Ficha('P',false,'r'), 4, 1);
+    tablero.colocarFicha(new Ficha('P',false,'r'), 4, 3);
+    tablero.colocarFicha(new Ficha('P',false,'a'), 0, 1);
+    tablero.colocarFicha(new Ficha('P',false,'a'), 0, 3);
 }
 
 
@@ -84,8 +83,11 @@ int main() {
                         jugadorRojo.cartas[1] = new CartaOso();
                         Carta* cartaCentro = new CartaDragon();
 
-                        const float boardSize = 500.f;
+                        const float margin = 20.f;
+                        float boardSize = std::min(gameWindow.getSize().y - 2*margin,gameWindow.getSize().x * 0.6f);
                         const float tileSize = boardSize / Tablero::Filas;
+                        float cardWidth  = gameWindow.getSize().x - boardSize - 3*margin;
+                        float cardHeight = (boardSize - 4*margin) / 3.f;
 
                                                 Texture boardTexture;
                         Sprite boardSprite;
@@ -94,7 +96,8 @@ int main() {
                             boardSprite.setTexture(boardTexture);
                             boardSprite.setScale(boardSize / boardTexture.getSize().x,
                                                  boardSize / boardTexture.getSize().y);
-                        }
+                            boardSprite.setPosition(margin, margin);
+                                                }
 
                         Texture tPawnRed, tPawnBlue, tKingRed, tKingBlue;
                         bool pawnRedOk  = tPawnRed.loadFromFile("files/peonRojo.png");
@@ -102,6 +105,17 @@ int main() {
                         bool kingRedOk  = tKingRed.loadFromFile("files/reyRojo.png");
                         bool kingBlueOk = tKingBlue.loadFromFile("files/reyAzul.png");
 
+    // Texturas de cartas (opcionalmente puede que no existan)
+                        Texture cardLeon, cardFenix, cardTigre, cardOso, cardDragon;
+                        bool cardLeonOk   = cardLeon.loadFromFile("files/Leon.png");
+                        bool cardFenixOk  = cardFenix.loadFromFile("files/Fenix.png");
+                        bool cardTigreOk  = cardTigre.loadFromFile("files/Tigre.png");
+                        bool cardOsoOk    = cardOso.loadFromFile("files/Oso.png");
+                        bool cardDragonOk = cardDragon.loadFromFile("files/Dragon.png");
+
+                    
+
+//pa la letra q sale en el menu (nosostros pusimos la de minecraft )
                         Font font;
                         font.loadFromFile("files/Minecraft.ttf");
 
@@ -109,6 +123,8 @@ int main() {
                         int selectedCard = -1;
                         int selRow = -1, selCol = -1;
                         std::vector<std::pair<int,int>> validMoves;
+                        bool juegoTerminado = false;
+                        std::string mensajeGanador;
 
                         auto calcularMovimientos = [&](int fila, int col, Carta* carta){
                             validMoves.clear();
@@ -130,9 +146,10 @@ int main() {
                                     gameWindow.close();
                                 if (gevent.type == Event::MouseButtonPressed && gevent.mouseButton.button == Mouse::Left) {
                                     Vector2f mp(gevent.mouseButton.x, gevent.mouseButton.y);
-                                    if(mp.x < boardSize && mp.y < boardSize) {
-                                        int row = mp.y / tileSize;
-                                        int col = mp.x / tileSize;
+                                    if(mp.x >= margin && mp.x < margin + boardSize &&
+                                       mp.y >= margin && mp.y < margin + boardSize) {
+                                        int row = (mp.y - margin) / tileSize;
+                                        int col = (mp.x - margin) / tileSize;
                                         char colorTurno = turnoRojo ? 'r' : 'a';
                                         if(selRow == -1) {
                                             if(selectedCard != -1) {
@@ -147,10 +164,15 @@ int main() {
                                             for(auto mv: validMoves){
                                                 if(mv.first==row && mv.second==col){
                                                     bool fin=false;
-                                                    tablero.moverFicha(selRow,selCol,row,col,fin);
+                                                    char ganador = tablero.moverFicha(selRow,selCol,row,col,fin);
                                                     Jugador& jug = turnoRojo ? jugadorRojo : jugadorAzul;
                                                     jug.usarCarta(selectedCard,cartaCentro);
-                                                    turnoRojo = !turnoRojo;
+                                                    if(fin && ganador!='0'){
+                                                        juegoTerminado = true;
+                                                        mensajeGanador = (ganador=='r')?"Gana el jugador ROJO":"Gana el jugador AZUL";
+                                                    }else{
+                                                        turnoRojo = !turnoRojo;
+                                                    }
                                                     selectedCard = -1;
                                                     selRow = selCol = -1;
                                                     validMoves.clear();
@@ -172,11 +194,13 @@ int main() {
                                         }
                                     } else {
                                         // Seleccion de carta
-                                        FloatRect cardAreas[3] = {
-                                            {520, 40, 160, 60},
-                                            {520, 120, 160, 60},
-                                            {520, 200, 160, 60}
-                                        };
+                                           FloatRect cardAreas[3];
+                                        for(int i=0;i<3;++i){
+                                            cardAreas[i] = {margin + boardSize + margin,
+                                                           margin + i*(cardHeight + margin),
+                                                           cardWidth,
+                                                           cardHeight};
+                                        }
                                         for(int i=0;i<2;++i){
                                             if(cardAreas[i].contains(mp)){
                                                 selectedCard = i;
@@ -208,7 +232,7 @@ int main() {
                             for (int i = 0; i < Tablero::Filas; ++i) {
                                 for (int j = 0; j < Tablero::Columnas; ++j) {
                                     RectangleShape square(Vector2f(tileSize, tileSize));
-                                    square.setPosition(j * tileSize, i * tileSize);
+                                    square.setPosition(margin + j * tileSize, margin + i * tileSize);
 
                                        if(!boardLoaded){
                                         if ((i + j) % 2 == 0)
@@ -247,13 +271,13 @@ int main() {
                                             }
                                         }
                                         if(drewSprite){
-                                            sp.setPosition(j*tileSize, i*tileSize);
+                                            sp.setPosition(margin + j*tileSize, margin + i*tileSize);
                                             sp.setScale(tileSize / sp.getTexture()->getSize().x,
                                                         tileSize / sp.getTexture()->getSize().y);
                                             gameWindow.draw(sp);
                                         }else{
                                             CircleShape piece(tileSize / 2.f - 8.f);
-                                            piece.setPosition(j * tileSize + 8.f, i * tileSize + 8.f);
+                                              piece.setPosition(margin + j * tileSize + 8.f, margin + i * tileSize + 8.f);
                                             if (f->getDueno() == 'r')
                                                 piece.setFillColor(Color::Red);
                                             else
@@ -265,8 +289,8 @@ int main() {
                                             label.setString(std::string(1, f->getTipo()));
                                             label.setCharacterSize(24);
                                             label.setFillColor(Color::White);
-                                            label.setPosition(j * tileSize + tileSize/2 - 8,
-                                                              i * tileSize + tileSize/2 - 12);
+                                                                        label.setPosition(margin + j * tileSize + tileSize/2 - 8,
+                                                              margin + i * tileSize + tileSize/2 - 12);
                                             gameWindow.draw(label);
                                         }
                                     }
@@ -277,16 +301,19 @@ int main() {
                             for(auto mv: validMoves){
                                 CircleShape hint(tileSize/2 - 20);
                                 hint.setFillColor(Color(0,255,0,120));
-                                hint.setPosition(mv.second*tileSize+20, mv.first*tileSize+20);
+                                hint.setPosition(margin + mv.second*tileSize+20,
+                                                 margin + mv.first*tileSize+20);
                                 gameWindow.draw(hint);
                             }
 
                             // Dibujar cartas
-                            FloatRect cardAreas[3] = {
-                                {520, 40, 160, 60},
-                                {520, 120, 160, 60},
-                                {520, 200, 160, 60}
-                            };
+                            FloatRect cardAreas[3];
+                            for(int i=0;i<3;++i){
+                                cardAreas[i] = {margin + boardSize + margin,
+                                                margin + i*(cardHeight + margin),
+                                                cardWidth,
+                                                cardHeight};
+                            }
                             Jugador& jugadorAct = turnoRojo ? jugadorRojo : jugadorAzul;
                             Carta* cartasMostrar[3] = {jugadorAct.cartas[0], jugadorAct.cartas[1], cartaCentro};
                             for(int i=0;i<3;++i){
@@ -297,14 +324,51 @@ int main() {
                                 rect.setOutlineColor((i==selectedCard)?Color::Yellow:Color::Black);
                                 gameWindow.draw(rect);
 
-                                Text t;
-                                t.setFont(font);
-                                t.setString(cartasMostrar[i]->getNombre());
-                                t.setCharacterSize(20);
-                                t.setFillColor(Color::Black);
-                                t.setPosition(cardAreas[i].left + 10, cardAreas[i].top + 20);
-                                gameWindow.draw(t);
-                            }
+                                Texture* cardTex = nullptr;
+                                std::string nombre = cartasMostrar[i]->getNombre();
+                                if(nombre == "Leon" && cardLeonOk)       cardTex = &cardLeon;
+                                else if(nombre == "Fenix" && cardFenixOk) cardTex = &cardFenix;
+                                else if(nombre == "Tigre" && cardTigreOk) cardTex = &cardTigre;
+                                else if(nombre == "Oso" && cardOsoOk)     cardTex = &cardOso;
+                                else if(nombre == "Dragon" && cardDragonOk) cardTex = &cardDragon;
+
+                                if(cardTex){
+                                    Sprite sp(*cardTex);
+                                    sp.setPosition(cardAreas[i].left, cardAreas[i].top);
+                                    sp.setScale(cardAreas[i].width / cardTex->getSize().x,
+                                                cardAreas[i].height / cardTex->getSize().y);
+                                    gameWindow.draw(sp);
+                                }else{
+                                    Text t;
+                                    t.setFont(font);
+                                    t.setString(nombre);
+                                    t.setCharacterSize(20);
+                                    t.setFillColor(Color::Black);
+                                    t.setPosition(cardAreas[i].left + 10, cardAreas[i].top + 20);
+                                    gameWindow.draw(t);
+                                }
+                            } Text turnoTxt;
+                            turnoTxt.setFont(font);
+                            turnoTxt.setString(turnoRojo ? "Turno: ROJO" : "Turno: AZUL");
+                            turnoTxt.setCharacterSize(24);
+                            turnoTxt.setFillColor(turnoRojo ? Color::Red : Color::Blue);
+                            turnoTxt.setPosition(margin, margin/2);
+                            gameWindow.draw(turnoTxt);
+
+                            if(juegoTerminado){
+                                RectangleShape overlay(Vector2f(gameWindow.getSize()));
+                                overlay.setFillColor(Color(0,0,0,150));
+                                gameWindow.draw(overlay);
+
+                                Text finTxt;
+                                finTxt.setFont(font);
+                                finTxt.setString(mensajeGanador);
+                                finTxt.setCharacterSize(32);
+                                finTxt.setFillColor(Color::White);
+                                FloatRect bounds = finTxt.getLocalBounds();
+                                finTxt.setPosition(gameWindow.getSize().x/2 - bounds.width/2,
+                                                   gameWindow.getSize().y/2 - bounds.height/2);
+                                gameWindow.draw(finTxt);}
 
                             gameWindow.display();
                         }
@@ -336,5 +400,7 @@ int main() {
 
 
 
+mejoraDeAspectoCartasYmusica
+    return 0;
+}
 
- 

@@ -36,14 +36,15 @@ bool Tablero::movimientoValidos(int filaOrigen, int colOrigen, int filaDestino, 
 }
 
 
-void Tablero::moverFicha(int filaOrigen, int colOrigen, int filaDestino, int colDestino, bool &juegoTerminado){
+char Tablero::moverFicha(int filaOrigen, int colOrigen, int filaDestino, int colDestino, bool &juegoTerminado){
     // por si no existe una ficha en la poscion origen
     Ficha* fOrigen = casillas[filaOrigen][colOrigen];
-    if (!fOrigen) return;
+     if (!fOrigen) return '0';
 
     // existe una ficha en esta poscicion? si es asi la borra(captura)
+    char ganador='0';
     if(casillas [filaDestino][colDestino] != nullptr){
-        eliminarFicha(filaDestino, colDestino,juegoTerminado);
+       ganador = eliminarFicha(filaDestino, colDestino,juegoTerminado);
     }
 
     //mueve la ficha
@@ -57,34 +58,38 @@ void Tablero::moverFicha(int filaOrigen, int colOrigen, int filaDestino, int col
     // Verificar si se movió un Rey a un dojo enemigo
     if (verificarReyEnDojo()) {
         // Si la función retorna true, ya se ha producido una victoria, por lo que no se sigue ejecutando más código
+        ganador = fOrigen->getDueno();
         juegoTerminado = true;
     }
-
-
-
+ return ganador;
 }
  // elimina la ficha si existe una ficha en la pos
-void Tablero::eliminarFicha(int fila, int columna, bool &juegoTerminado){
-    Ficha* ficha = casillas[fila][columna]; 
+char Tablero::eliminarFicha(int fila, int columna, bool &juegoTerminado){
+    Ficha* ficha = casillas[fila][columna];
     if(ficha != nullptr){
+          char ganador='0';
         if(ficha->getTipo() == 'R' ){
             if(ficha->getDueno() == 'a'){
                  std::cout << "¡El Rey Azul ha sido capturado! Gana el jugador ROJO." << std::endl;
                  juegoTerminado = true;
+                 ganador='r';
                    
             }
             if(ficha->getDueno() == 'r'){
                 std::cout << "¡El Rey Rojo ha sido capturado! Gana el jugador AZUL." << std::endl;
                 juegoTerminado = true;
-
+                ganador='a';
                 
             }
 
             
         }
+
         delete casillas[fila][columna];
         casillas[fila][columna] = nullptr;
+        return ganador;
     }
+    return '0';
 }
 
 Ficha* Tablero::getPosicionFicha(int fila, int columna) const{

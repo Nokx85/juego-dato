@@ -26,9 +26,9 @@ public:
 
    bool movimientoValidos(int filaOrigen, int colOrigen,int filaDestino, int colDestino) const;
 
-    void moverFicha(int filaOrigen, int colOrigen,int filaDestino, int colDestino,bool &juegoTerminado);
+    char moverFicha(int filaOrigen, int colOrigen,int filaDestino, int colDestino,bool &juegoTerminado);
 
-    void eliminarFicha(int fila, int columna, bool &juegoTerminado);
+    char eliminarFicha(int fila, int columna, bool &juegoTerminado);
     // elimina una ficha ( por captura o victoria)
 
     Ficha* getPosicionFicha(int fila, int columna) const;
