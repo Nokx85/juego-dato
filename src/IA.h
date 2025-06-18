@@ -10,6 +10,7 @@ struct MovimientoIA {
     int columnaOrigen;
     int filaDestino;
     int columnaDestino;
+    int indiceCarta;
 };
 
 class IA {

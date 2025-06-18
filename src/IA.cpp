@@ -5,12 +5,9 @@
 
 IA::IA() {}
 
-MovimientoIA IA::obtenerMejorMovimiento(const Tablero& tablero,
-                                        const std::array<Carta*, 2>& cartasJugador,
-                                        const std::array<Carta*, 2>& cartasEnemigo,
-                                        int profundidad, char jugadorColor) {
+MovimientoIA IA::obtenerMejorMovimiento(const Tablero& tablero,  const std::array<Carta*, 2>& cartasJugador,  const std::array<Carta*, 2>& cartasEnemigo, int profundidad, char jugadorColor) {
     int mejorValor = -99999;
-    MovimientoIA mejorMovimiento{0,0,0,0};
+    MovimientoIA mejorMovimiento{0,0,0,0,0};
     
     // Asegurémonos de que esta variable esté definida
     std::vector<Tablero> estadosFuturos;
@@ -41,13 +38,14 @@ std::vector<MovimientoIA> IA::obtenerMovimientosPosibles(const Tablero& tablero,
         for (int j = 0; j < Tablero::Columnas; ++j) {
             Ficha* ficha = tablero.getPosicionFicha(i, j);
             if (ficha != nullptr && ficha->getDueno() == jugadorColor) {
-                for (Carta* carta : cartas) {
+                for (int idx=0; idx<2; ++idx) {
+                    Carta* carta = cartas[idx];
                     for (int k = 0; k < carta->getCantidadMovimientos(); ++k) {
                         Movimiento mov = carta->getMovimiento(k);
                         int nf = i + mov.dx;
                         int nc = j + mov.dy;
                         if (tablero.movimientoValidos(i, j, nf, nc)) {
-                            movimientosPosibles.push_back({i, j, nf, nc});
+                            movimientosPosibles.push_back({i, j, nf, nc, idx});
                         }
                     }
                 }
