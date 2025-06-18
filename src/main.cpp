@@ -99,6 +99,7 @@ int main() {
 
                         IA ia;                       // instancia de la IA
                         char colorIA = 'a';          // la IA jugará con las fichas azules
+                        char colorJugador = (colorIA=='a') ? 'r' : 'a';
                         bool juegoTerminado = false; // para detectar fin de partida
 
                         jugadorAzul.cartas[0] = new CartaLeon();
@@ -194,7 +195,7 @@ int main() {
                                                     jug.usarCarta(selectedCard,cartaCentro);
                                                     if(fin && ganador!='0'){
                                                         juegoTerminado = true;
-                                                        mensajeGanador = (ganador=='r')?"Gana el jugador ROJO":"Gana el jugador AZUL";
+                                                                 mensajeGanador = (ganador==colorJugador)?"¡Has ganado!":"Has perdido";
                                                     }else{
                                                         turnoRojo = !turnoRojo;
                                                     }
@@ -209,8 +210,8 @@ int main() {
                                                         MovimientoIA mejor = ia.obtenerMejorMovimiento(tablero, iaPlayer.cartas, humano.cartas, 2, colorIA);
                                                         char gIA = tablero.moverFicha(mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, juegoTerminado);
                                                         iaPlayer.usarCarta(mejor.indiceCarta, cartaCentro);
-                                                                                                                if(juegoTerminado && gIA!='0'){
-                                                            mensajeGanador = (gIA=='r')?"Gana el jugador ROJO":"Gana el jugador AZUL";
+                                                            if(juegoTerminado && gIA!='0'){
+                                                            mensajeGanador = (gIA==colorJugador)?"¡Has ganado!":"Has perdido";
                                                         }else{
                                                             turnoRojo = !turnoRojo;
                                                         }
@@ -250,7 +251,7 @@ int main() {
                                char gIA = tablero.moverFicha(mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, juegoTerminado);
                                 iaPlayer.usarCarta(mejor.indiceCarta, cartaCentro);
                                 if(juegoTerminado && gIA!='0'){
-                                    mensajeGanador = (gIA=='r')?"Gana el jugador ROJO":"Gana el jugador AZUL";
+                                        mensajeGanador = (gIA==colorJugador)?"¡Has ganado!":"Has perdido";
                                 }else{
                                     turnoRojo = !turnoRojo;
                                 }
