@@ -123,7 +123,7 @@ int main() {
                         int selectedCard = -1;
                         int selRow = -1, selCol = -1;
                         std::vector<std::pair<int,int>> validMoves;
-                        bool juegoTerminado = false;
+                       
                         std::string mensajeGanador;
 
                         auto calcularMovimientos = [&](int fila, int col, Carta* carta){
