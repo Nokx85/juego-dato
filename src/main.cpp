@@ -22,7 +22,7 @@
 
 using namespace sf;
 
-bool musicEnabled = true;
+bool musicEnabled = false;
 Music music;
 void inicializarTablero(Tablero& tablero) {
     // Ejemplo: coloca los reyes y peones; ajusta filas/columnas según tu lógica
@@ -115,7 +115,8 @@ int main() {
 
                                                 Texture boardTexture;
                         Sprite boardSprite;
-                        bool boardLoaded = boardTexture.loadFromFile("files/fondoTablero.jpg");
+                        //pa el tablero donde pelean
+                        bool boardLoaded = boardTexture.loadFromFile("files/fondoAtras.jpg");
                         if(boardLoaded){
                             boardSprite.setTexture(boardTexture);
                             boardSprite.setScale(boardSize / boardTexture.getSize().x,
@@ -206,9 +207,13 @@ int main() {
                                                         Jugador& iaPlayer = (colorIA=='r') ? jugadorRojo : jugadorAzul;
                                                         Jugador& humano    = (colorIA=='r') ? jugadorAzul : jugadorRojo;
                                                         MovimientoIA mejor = ia.obtenerMejorMovimiento(tablero, iaPlayer.cartas, humano.cartas, 2, colorIA);
-                                                        tablero.moverFicha(mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, juegoTerminado);
+                                                        char gIA = tablero.moverFicha(mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, juegoTerminado);
                                                         iaPlayer.usarCarta(mejor.indiceCarta, cartaCentro);
-                                                        turnoRojo = !turnoRojo;
+                                                                                                                if(juegoTerminado && gIA!='0'){
+                                                            mensajeGanador = (gIA=='r')?"Gana el jugador ROJO":"Gana el jugador AZUL";
+                                                        }else{
+                                                            turnoRojo = !turnoRojo;
+                                                        }
                                                     }
 
 
@@ -242,9 +247,13 @@ int main() {
                                 Jugador& iaPlayer = (colorIA=='r') ? jugadorRojo : jugadorAzul;
                                 Jugador& humano    = (colorIA=='r') ? jugadorAzul : jugadorRojo;
                                 MovimientoIA mejor = ia.obtenerMejorMovimiento(tablero, iaPlayer.cartas, humano.cartas, 2, colorIA);
-                                tablero.moverFicha(mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, juegoTerminado);
+                               char gIA = tablero.moverFicha(mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, juegoTerminado);
                                 iaPlayer.usarCarta(mejor.indiceCarta, cartaCentro);
-                                turnoRojo = !turnoRojo;
+                                if(juegoTerminado && gIA!='0'){
+                                    mensajeGanador = (gIA=='r')?"Gana el jugador ROJO":"Gana el jugador AZUL";
+                                }else{
+                                    turnoRojo = !turnoRojo;
+                                }
                             }
 
 
@@ -377,8 +386,10 @@ int main() {
                             turnoTxt.setFont(font);
                             turnoTxt.setString(turnoRojo ? "Turno: ROJO" : "Turno: AZUL");
                             turnoTxt.setCharacterSize(24);
-                            turnoTxt.setFillColor(turnoRojo ? Color::Red : Color::Blue);
-                            turnoTxt.setPosition(margin, margin/2);
+                            // Texto de turno siempre en negro para mayor legibilidad
+                            turnoTxt.setFillColor(Color::Black);
+                            // Mostrar el turno en la esquina inferior izquierda
+                            turnoTxt.setPosition(margin, margin + boardSize + 10);
                             gameWindow.draw(turnoTxt);
 
                             if(juegoTerminado){
@@ -388,13 +399,15 @@ int main() {
 
                                 Text finTxt;
                                 finTxt.setFont(font);
-                                finTxt.setString(mensajeGanador);
+                                 finTxt.setString(mensajeGanador + "\nPresiona ESC para salir");
                                 finTxt.setCharacterSize(32);
                                 finTxt.setFillColor(Color::White);
                                 FloatRect bounds = finTxt.getLocalBounds();
                                 finTxt.setPosition(gameWindow.getSize().x/2 - bounds.width/2,
                                                    gameWindow.getSize().y/2 - bounds.height/2);
-                                gameWindow.draw(finTxt);}
+                                 gameWindow.draw(finTxt);
+                            }
+
 
                             gameWindow.display();
                         }
