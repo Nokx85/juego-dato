@@ -16,7 +16,10 @@ public:
 
 
 
-    Tablero();  // crea el tablero de n filas y m columnas 
+    Tablero();  // crea el tablero de n filas y m columnas
+    Tablero(const Tablero& other);
+    Tablero& operator=(const Tablero& other);
+    ~Tablero(); 
 
     void colocarFicha(Ficha* ficha, int fila, int columna);
     // coloca una ficha por primera ves (la inicialisa) (iniciar juego)

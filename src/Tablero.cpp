@@ -11,6 +11,42 @@ Tablero::Tablero(){
     }
 }
 
+
+Tablero::Tablero(const Tablero& other){
+    for(int i=0;i<Filas;++i){
+        for(int j=0;j<Columnas;++j){
+            if(other.casillas[i][j])
+                casillas[i][j] = new Ficha(*other.casillas[i][j]);
+            else
+                casillas[i][j] = nullptr;
+        }
+    }
+}
+
+Tablero& Tablero::operator=(const Tablero& other){
+    if(this!=&other){
+        for(int i=0;i<Filas;++i){
+            for(int j=0;j<Columnas;++j){
+                delete casillas[i][j];
+                if(other.casillas[i][j])
+                    casillas[i][j] = new Ficha(*other.casillas[i][j]);
+                else
+                    casillas[i][j] = nullptr;
+            }
+        }
+    }
+    return *this;
+}
+
+Tablero::~Tablero(){
+    for(int i=0;i<Filas;++i){
+        for(int j=0;j<Columnas;++j){
+            delete casillas[i][j];
+            casillas[i][j] = nullptr;
+        }
+    }
+}
+
 void Tablero::colocarFicha(Ficha* ficha, int fila, int columna) {
     ficha->setPosicionFicha(fila, columna); 
     casillas[fila][columna] = ficha;
