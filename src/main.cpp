@@ -73,6 +73,11 @@ int main() {
 
                         Jugador jugadorAzul('a');
                         Jugador jugadorRojo('r');
+
+                        IA ia;                       // instancia de la IA
+                        char colorIA = 'a';          // la IA jugará con las fichas azules
+                        bool juegoTerminado = false; // para detectar fin de partida
+
                         jugadorAzul.cartas[0] = new CartaLeon();
                         jugadorAzul.cartas[1] = new CartaFenix();
                         jugadorRojo.cartas[0] = new CartaTigre();
@@ -149,6 +154,18 @@ int main() {
                                                     selectedCard = -1;
                                                     selRow = selCol = -1;
                                                     validMoves.clear();
+
+                                                    // Si es turno de la IA, ejecutar su movimiento
+                                                    if(!juegoTerminado && ((colorIA=='r' && turnoRojo) || (colorIA=='a' && !turnoRojo))){
+                                                        Jugador& iaPlayer = (colorIA=='r') ? jugadorRojo : jugadorAzul;
+                                                        Jugador& humano    = (colorIA=='r') ? jugadorAzul : jugadorRojo;
+                                                        MovimientoIA mejor = ia.obtenerMejorMovimiento(tablero, iaPlayer.cartas, humano.cartas, 2, colorIA);
+                                                        tablero.moverFicha(mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, juegoTerminado);
+                                                        iaPlayer.usarCarta(mejor.indiceCarta, cartaCentro);
+                                                        turnoRojo = !turnoRojo;
+                                                    }
+
+
                                                     break;
                                                 }
                                             }
@@ -170,6 +187,18 @@ int main() {
                                     }
                                 }
                             }
+
+                            // Si el turno corresponde a la IA y no se ha terminado el juego,
+                            // ejecuta su movimiento automáticamente
+                            if(!juegoTerminado && ((colorIA=='r' && turnoRojo) || (colorIA=='a' && !turnoRojo))){
+                                Jugador& iaPlayer = (colorIA=='r') ? jugadorRojo : jugadorAzul;
+                                Jugador& humano    = (colorIA=='r') ? jugadorAzul : jugadorRojo;
+                                MovimientoIA mejor = ia.obtenerMejorMovimiento(tablero, iaPlayer.cartas, humano.cartas, 2, colorIA);
+                                tablero.moverFicha(mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, juegoTerminado);
+                                iaPlayer.usarCarta(mejor.indiceCarta, cartaCentro);
+                                turnoRojo = !turnoRojo;
+                            }
+
 
                             gameWindow.clear();
                             // --- Dibujar cuadrícula ---
