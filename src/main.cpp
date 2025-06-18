@@ -400,7 +400,5 @@ int main() {
 
 
 
-mejoraDeAspectoCartasYmusica
-    return 0;
-}
 
+    
