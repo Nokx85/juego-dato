@@ -24,6 +24,6 @@ Para compilar el codigo , poner lo siguiente en el terminal ( Ctrl + ñ  para ab
 
 ### Integrantes del github 
 ```bison
-  Benjamin Bustamante 21.507.588-5 benjamin.bustamante@alumnos.ucn.cl 
-  Joaquin Carrasco 21.764.393-7 joaquin.carrasco@alumnos.ucn.cl
+  Benjamin Bustamante 21.507.588-5 benjamin.bustamante@alumnos.ucn.cl   ICCI
+  Joaquin Carrasco 21.764.393-7 joaquin.carrasco@alumnos.ucn.cl         ICCI
 ```
