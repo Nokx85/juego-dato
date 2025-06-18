@@ -298,6 +298,10 @@ int main() {
         MENU.display();
     }
 
+    std::cout << "\nGracias por jugar.\n";
+    return 0;
+ 
+}
 
 
 
