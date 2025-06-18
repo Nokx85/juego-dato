@@ -11,6 +11,7 @@
 #include "Jugador.h"
 #include "IA.h"
 
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "mainMenu.h"
 
@@ -21,6 +22,8 @@
 
 using namespace sf;
 
+bool musicEnabled = true;
+Music music;
 void inicializarTablero(Tablero& tablero) {
     // Ejemplo: coloca los reyes y peones; ajusta filas/columnas según tu lógica
     // Asume que Ficha tiene un constructor Ficha(char tipo, char dueno)
@@ -39,10 +42,21 @@ void inicializarTablero(Tablero& tablero) {
 int main() {
 
     
-     RenderWindow MENU(VideoMode(960, 720), "Main Menu", Style::Default);
+    RenderWindow MENU(VideoMode(960, 720), "Main Menu", Style::Default);
     MainMenu mainMenu(MENU.getSize().x, MENU.getSize().y);
 
-    // Fondo del menú (igual que antes)...
+    //musiquita
+     if(music.openFromFile("files/cancion.wav")){
+        music.setLoop(true);
+        if(musicEnabled)
+            music.play();
+    }else{
+        std::cout << "No se pudo cargar la musica" << std::endl;
+    }
+
+
+
+    // Fondo del menú 
     RectangleShape background(Vector2f(960,720));
     Texture mainTexture; 
     mainTexture.loadFromFile("files/fondo.jpg");
@@ -65,6 +79,16 @@ int main() {
                         // Cerramos el menú y abrimos la ventana de juego
                         MENU.close();
                         RenderWindow gameWindow(VideoMode(700, 500), "Onitama");
+                    //aqui pa cambiar el texto del fondo del tablero al presionar jugar donde tan las cartas 
+                        Texture gameBgTex;
+                        Sprite gameBg;
+                        if(gameBgTex.loadFromFile("files/fondoAtras.jpg")){
+                            gameBg.setTexture(gameBgTex);
+                            gameBg.setScale(
+                                gameWindow.getSize().x / (float)gameBgTex.getSize().x,
+                                gameWindow.getSize().y / (float)gameBgTex.getSize().y);
+                        }
+
 
                         // Preparar tablero y jugadores
                         Tablero tablero;
@@ -225,6 +249,8 @@ int main() {
 
 
                             gameWindow.clear();
+                              if(gameBgTex.getSize().x>0)
+                                gameWindow.draw(gameBg);
                             // --- Dibujar cuadrícula ---
                              if(boardLoaded)
                                 gameWindow.draw(boardSprite);
@@ -374,6 +400,38 @@ int main() {
                         }
 
                         return 0;
+                    }
+                              else if (x == 1) { // Opciones
+                        RenderWindow optWindow(VideoMode(400,200), "Opciones");
+                        Font fontOpt;
+                        fontOpt.loadFromFile("files/Minecraft.ttf");
+                        Text msg;
+                        msg.setFont(fontOpt);
+                        msg.setCharacterSize(24);
+
+                        while(optWindow.isOpen()){
+                            Event ev;
+                            while(optWindow.pollEvent(ev)){
+                                if(ev.type==Event::Closed)
+                                    optWindow.close();
+                                if(ev.type==Event::KeyPressed){
+                                    if(ev.key.code==Keyboard::Escape)
+                                        optWindow.close();
+                                    if(ev.key.code==Keyboard::Return){
+                                        musicEnabled = !musicEnabled;
+                                        if(musicEnabled)
+                                            music.play();
+                                        else
+                                            music.stop();
+                                    }
+                                }
+                            }
+                            optWindow.clear();
+                            msg.setString(string("Musica: ") + (musicEnabled?"ON":"OFF") + "\nEnter para cambiar\nEsc para volver");
+                            msg.setPosition(20,80);
+                            optWindow.draw(msg);
+                            optWindow.display();
+                        }
                     }
                     else if (x == 2) { // Salir
                         MENU.close();
