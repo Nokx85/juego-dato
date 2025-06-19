@@ -25,8 +25,8 @@ using namespace sf;
 bool musicEnabled = false;
 Music music;
 void inicializarTablero(Tablero& tablero) {
-    // Ejemplo: coloca los reyes y peones; ajusta filas/columnas según tu lógica
-    // Asume que Ficha tiene un constructor Ficha(char tipo, char dueno)
+   
+    // constructor Ficha(char tipo, char dueno)
     tablero.colocarFicha(new Ficha ('R',false,'r'), 4, 2);   // Rey rojo
     tablero.colocarFicha(new Ficha('R',false,'a'), 0, 2);    // Rey azul
 
@@ -387,7 +387,7 @@ int main() {
                             turnoTxt.setFont(font);
                             turnoTxt.setString(turnoRojo ? "Turno: ROJO" : "Turno: AZUL");
                             turnoTxt.setCharacterSize(24);
-                            // Texto de turno siempre en negro para mayor legibilidad
+                            // Texto de turno siempre en negro para que se vea bien
                             turnoTxt.setFillColor(Color::Black);
                             // Mostrar el turno en la esquina inferior izquierda
                             turnoTxt.setPosition(margin, margin + boardSize + 10);
@@ -471,6 +471,3 @@ int main() {
 
 
 
-
-
-    
