@@ -75,9 +75,9 @@ int IA::minimax(const Tablero& tablero, int profundidad, int alpha, int beta, bo
     for (const MovimientoIA& mov : movimientos) {
         Tablero nuevo = tablero;
         bool terminado = false;
-        nuevo.moverFicha(mov.filaOrigen, mov.columnaOrigen,
-                         mov.filaDestino, mov.columnaDestino, terminado);
-        // Asegurémonos de que esta variable esté definida
+        nuevo.moverFicha(mov.filaOrigen, mov.columnaOrigen,mov.filaDestino, mov.columnaDestino, terminado);
+        
+
         std::vector<Tablero> estadosFuturos;
         estadosFuturos.push_back(nuevo);
         int valor = minimax(nuevo, profundidad - 1, alpha, beta, !esMaximizador,
@@ -96,9 +96,9 @@ int IA::minimax(const Tablero& tablero, int profundidad, int alpha, int beta, bo
     return mejorValor;
 }
 
-// Evaluación del estado del tablero
+// Evaluar el estado del tablero
 int IA::evaluarEstado(const Tablero& tablero, char jugadorColor) {
-    // Verificación de victoria o derrota inmediata
+    // Verificar victoria o derrota inmediata
     Ficha* enDojoAzul = tablero.getPosicionFicha(0, 2);
     if (enDojoAzul && enDojoAzul->getTipo() == 'R') {
         if (enDojoAzul->getDueno() == jugadorColor)
@@ -170,7 +170,8 @@ int IA::evaluarPosicion(const Tablero& tablero, char jugadorColor) {
                    std::abs(reyJugador->getColumna() - 2);
         puntuacion += (4 - dist) * 3; // cuanto más cerca mejor
 
-        // Evaluar peligro: enemigo adyacente
+
+        // Evaluar peligro(enemigo cerca)
         for (const auto& pos : piezasEnemigo) {
             if (std::abs(pos.first - reyJugador->getFila()) <= 1 &&
                 std::abs(pos.second - reyJugador->getColumna()) <= 1) {

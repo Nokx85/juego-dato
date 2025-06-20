@@ -37,8 +37,9 @@ public:
     Ficha* getPosicionFicha(int fila, int columna) const;
     // devuelve cual ficha esta en esta poscicion del tablero 
 
-    // Muestra las fichas del jugador y almacena sus posiciones
     void mostrarFichasJugador(char jugadorColor,std::vector<std::pair<int,int>>& posiciones) const;
+    // Muestra las fichas del jugador y almacena sus posiciones
+
 
     void mostrarTablero()const;
     // muestra la poscicion actual del tablero

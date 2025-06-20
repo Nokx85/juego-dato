@@ -87,13 +87,12 @@ char Tablero::moverFicha(int filaOrigen, int colOrigen, int filaDestino, int col
     casillas[filaDestino][colDestino] = fOrigen;
     casillas[filaOrigen][colOrigen] = nullptr;
 
-    //actualisa la pos en la fila 
-    // Actualizar posición
+    //actualisa la pos en la fila y columna
     fOrigen->setPosicionFicha(filaDestino, colDestino);
 
     // Verificar si se movió un Rey a un dojo enemigo
     if (verificarReyEnDojo()) {
-        // Si la función retorna true, ya se ha producido una victoria, por lo que no se sigue ejecutando más código
+        // Si la función retorna true, ya se ha producido una victoria
         ganador = fOrigen->getDueno();
         juegoTerminado = true;
     }
@@ -106,13 +105,13 @@ char Tablero::eliminarFicha(int fila, int columna, bool &juegoTerminado){
           char ganador='0';
         if(ficha->getTipo() == 'R' ){
             if(ficha->getDueno() == 'a'){
-                 std::cout << "¡El Rey Azul ha sido capturado! Gana el jugador ROJO." << std::endl;
+                 
                  juegoTerminado = true;
                  ganador='r';
                    
             }
             if(ficha->getDueno() == 'r'){
-                std::cout << "¡El Rey Rojo ha sido capturado! Gana el jugador AZUL." << std::endl;
+                
                 juegoTerminado = true;
                 ganador='a';
                 
@@ -169,7 +168,7 @@ bool Tablero::verificarReyEnDojo() const {
     if (fichaEnDojoAzul &&
         fichaEnDojoAzul->getTipo() == 'R' &&
         fichaEnDojoAzul->getDueno() == 'r') {
-        std::cout << "¡El Rey Rojo llegó al dojo azul! Gana el jugador ROJO." << std::endl;
+       
         return true;
     }
 
@@ -178,7 +177,7 @@ bool Tablero::verificarReyEnDojo() const {
     if (fichaEnDojoRojo &&
         fichaEnDojoRojo->getTipo() == 'R' &&
         fichaEnDojoRojo->getDueno() == 'a') {
-        std::cout << "¡El Rey Azul llegó al dojo rojo! Gana el jugador AZUL." << std::endl;
+       
         return true;
     }
     return false; // ningún rey ha llegado al dojo enemigo
