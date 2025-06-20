@@ -19,8 +19,18 @@
 #include <iostream>
 #include <vector>
 #include <limits>
+#include <stack>
 
 using namespace sf;
+
+struct RegistroMovimiento {
+    int filaOrigen;
+    int columnaOrigen;
+    int filaDestino;
+    int columnaDestino;
+    int indiceCarta;
+    char jugador;
+};
 
 bool musicEnabled = false;
 Music music;
@@ -44,6 +54,8 @@ int main() {
     
     RenderWindow MENU(VideoMode(960, 720), "Main Menu", Style::Default);
     MainMenu mainMenu(MENU.getSize().x, MENU.getSize().y);
+
+     std::stack<RegistroMovimiento> historialMovimientos;
 
     //musiquita
      if(music.openFromFile("files/cancion.wav")){
@@ -193,6 +205,7 @@ int main() {
                                                     char ganador = tablero.moverFicha(selRow,selCol,row,col,fin);
                                                     Jugador& jug = turnoRojo ? jugadorRojo : jugadorAzul;
                                                     jug.usarCarta(selectedCard,cartaCentro);
+                                                    historialMovimientos.push({selRow, selCol, row, col, selectedCard, colorTurno});
                                                     if(fin && ganador!='0'){
                                                         juegoTerminado = true;
                                                                  mensajeGanador = (ganador==colorJugador)?"¡Has ganado!":"Has perdido";
@@ -210,7 +223,8 @@ int main() {
                                                         MovimientoIA mejor = ia.obtenerMejorMovimiento(tablero, iaPlayer.cartas, humano.cartas, 2, colorIA);
                                                         char gIA = tablero.moverFicha(mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, juegoTerminado);
                                                         iaPlayer.usarCarta(mejor.indiceCarta, cartaCentro);
-                                                            if(juegoTerminado && gIA!='0'){
+                                                        historialMovimientos.push({mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, mejor.indiceCarta, colorIA});
+                                                        if(juegoTerminado && gIA!='0'){
                                                             mensajeGanador = (gIA==colorJugador)?"¡Has ganado!":"Has perdido";
                                                         }else{
                                                             turnoRojo = !turnoRojo;
@@ -250,6 +264,7 @@ int main() {
                                 MovimientoIA mejor = ia.obtenerMejorMovimiento(tablero, iaPlayer.cartas, humano.cartas, 2, colorIA);
                                char gIA = tablero.moverFicha(mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, juegoTerminado);
                                 iaPlayer.usarCarta(mejor.indiceCarta, cartaCentro);
+                                historialMovimientos.push({mejor.filaOrigen, mejor.columnaOrigen, mejor.filaDestino, mejor.columnaDestino, mejor.indiceCarta, colorIA});
                                 if(juegoTerminado && gIA!='0'){
                                         mensajeGanador = (gIA==colorJugador)?"¡Has ganado!":"Has perdido";
                                 }else{
